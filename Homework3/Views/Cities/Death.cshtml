@@ -1,0 +1,110 @@
+﻿@model City
+@{
+    ViewData["Title"] = @Model.CityName;
+}
+
+@section StyleSheets{
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+}
+
+
+<div class="form-group">
+    <select class="form-control col-md-5" name="Id">
+
+        @foreach (var city in ViewBag.Cities)
+        {
+            if (city.Value == Model.Id.ToString())
+            {
+                <option value="@city.Value" selected>@city.Text</option>
+            }
+            else
+            {
+                <option value="@city.Value">@city.Text</option>
+            }
+        }
+    </select>
+</div>
+<div class="alert alert-primary" role="alert">
+    Report by <strong>Deaths</strong>
+</div>
+<div class="btn-group">
+    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Report by
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="/Cities/View/@Model.Id">Cases</a>
+        <a class="dropdown-item" href="/Cities/Death/@Model.Id">Deaths</a>
+        <a class="dropdown-item" href="/Cities/Tested/@Model.Id">Tested</a>
+    </div>
+</div>
+
+<div class="ct-chart"></div>
+
+
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Cases</th>
+                <th scope="col">Deaths</th>
+                <th scope="col">Tested</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var covid in ViewBag.Covid19s)
+            {
+                <tr>
+                    <td>@covid.Date.Month/@covid.Date.Day/@covid.Date.Year</td>
+                    <td>@covid.Cases</td>
+                    <td>@covid.Deaths</td>
+                    <td>@covid.Tested</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts {
+
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+
+    <script>
+        var data = {
+        // A labels array that can contain any sort of values
+        labels: @Json.Serialize(ViewBag.Dates),
+            // Our series array that contains series objects or in this case series data arrays
+            series: [
+                @Json.Serialize(ViewBag.Deaths)
+            ]
+        };
+        new Chartist.Line('.ct-chart', data);
+    </script>
+    <script>
+        $(function () {
+            $("select").change(function () {
+                window.location.href = $(this).val();
+            });
+        });
+    </script>
+}

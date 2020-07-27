@@ -1,0 +1,17 @@
+﻿@model List<City>
+@{
+    ViewData["Title"] = "Los Angeles County - COVID19";
+}
+
+<form method="post">
+    <div class="form-group">
+        <select class="form-control" onchange="submit()" name="Id">
+            <option value="" selected>Please choose a city...</option>
+            @foreach (var item in Model)
+            {
+                <option value="@item.Id">@item.CityName</option>
+            }
+        </select>
+    </div>
+
+</form>
